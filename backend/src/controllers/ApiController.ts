@@ -531,7 +531,22 @@ export const indexImage = async (req: Request, res: Response): Promise<Response>
         const axios = (await import("axios")).default;
         const response = await axios.get(url, { responseType: "arraybuffer" });
         const contentType = response.headers["content-type"] || "image/jpeg";
-        const extension = contentType.includes("png") ? ".png" : contentType.includes("jpeg") ? ".jpg" : contentType.includes("jpg") ? ".jpg" : contentType.includes("gif") ? ".gif" : ".jpg";
+
+	const contentTypeString =
+	  typeof contentType === "string" ? contentType.toLowerCase() : "";
+
+	let extension = ".jpg";
+
+	if (contentTypeString.includes("png")) {
+	  extension = ".png";
+	} else if (
+	  contentTypeString.includes("jpeg") ||
+	  contentTypeString.includes("jpg")
+	) {
+	  extension = ".jpg";
+	} else if (contentTypeString.includes("gif")) {
+	  extension = ".gif";
+	}
 
         const publicFolder = path.resolve(__dirname, "..", "..", "public");
         const fileName = `api-img-${Date.now()}${extension}`;
